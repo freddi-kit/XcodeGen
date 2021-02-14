@@ -10,8 +10,10 @@ public struct SpecOptions: Equatable {
     public static let generateEmptyDirectoriesDefault = false
     public static let findCarthageFrameworksDefault = false
     public static let useBaseInternationalizationDefault = true
+    public static let carthageXCFrameworksDefault = false
 
     public var minimumXcodeGenVersion: Version?
+    public var carthageXCFrameworks: Bool
     public var carthageBuildPath: String?
     public var carthageExecutablePath: String?
     public var createIntermediateGroups: Bool
@@ -74,6 +76,7 @@ public struct SpecOptions: Equatable {
 
     public init(
         minimumXcodeGenVersion: Version? = nil,
+        carthageXCFrameworks: Bool = carthageXCFrameworksDefault,
         carthageBuildPath: String? = nil,
         carthageExecutablePath: String? = nil,
         createIntermediateGroups: Bool = createIntermediateGroupsDefault,
@@ -99,6 +102,7 @@ public struct SpecOptions: Equatable {
         useBaseInternationalization: Bool = useBaseInternationalizationDefault
     ) {
         self.minimumXcodeGenVersion = minimumXcodeGenVersion
+        self.carthageXCFrameworks = carthageXCFrameworks
         self.carthageBuildPath = carthageBuildPath
         self.carthageExecutablePath = carthageExecutablePath
         self.createIntermediateGroups = createIntermediateGroups
@@ -132,6 +136,7 @@ extension SpecOptions: JSONObjectConvertible {
             minimumXcodeGenVersion = try Version.parse(string)
         }
 
+        carthageXCFrameworks = jsonDictionary.json(atKeyPath: "carthageXCFrameworks") ?? SpecOptions.carthageXCFrameworksDefault
         carthageBuildPath = jsonDictionary.json(atKeyPath: "carthageBuildPath")
         carthageExecutablePath = jsonDictionary.json(atKeyPath: "carthageExecutablePath")
         bundleIdPrefix = jsonDictionary.json(atKeyPath: "bundleIdPrefix")
@@ -199,6 +204,9 @@ extension SpecOptions: JSONEncodable {
         }
         if useBaseInternationalization != SpecOptions.useBaseInternationalizationDefault {
             dict["useBaseInternationalization"] = useBaseInternationalization
+        }
+        if carthageXCFrameworks != SpecOptions.carthageXCFrameworksDefault {
+            dict["carthageXCFrameworks"] = carthageXCFrameworks
         }
 
         return dict
